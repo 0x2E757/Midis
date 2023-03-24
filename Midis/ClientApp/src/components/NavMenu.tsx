@@ -17,6 +17,12 @@ export class NavMenu extends React.PureComponent {
         });
     }
 
+    hideNavbar = () => {
+        this.setState({
+            collapsed: true,
+        });
+    }
+
     render = () => {
         return (
             <header>
@@ -26,10 +32,19 @@ export class NavMenu extends React.PureComponent {
                     <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav flex-grow">
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/" onClick={this.hideNavbar}>
+                                    Home
+                                </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/login" onClick={this.hideNavbar}>
+                                    Log in
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/register" onClick={this.hideNavbar}>
+                                    Register
+                                </NavLink>
                             </NavItem>
                         </ul>
                     </Collapse>

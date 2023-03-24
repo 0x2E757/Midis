@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "reactstrap";
 import { NavMenu } from "./NavMenu";
 
 interface IProps {
@@ -14,9 +13,7 @@ export class Layout extends React.PureComponent<IProps> {
         return (
             <div>
                 <NavMenu />
-                <Container tag="main">
-                    {this.props.children}
-                </Container>
+                {this.props.children}
             </div>
         );
     }

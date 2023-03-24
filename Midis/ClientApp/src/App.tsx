@@ -1,8 +1,9 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { Counter } from "./components/Views/Counter";
 import { Home } from "./components/Views/Home";
+import { Login } from "./components/Views/Login";
+import { Register } from "./components/Views/Register";
 import "./custom.css";
 
 export default class App extends React.PureComponent {
@@ -14,7 +15,8 @@ export default class App extends React.PureComponent {
             <Layout>
                 <Routes>
                     <Route index element={<Home />} />
-                    <Route path="/counter" element={<Counter />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
                 </Routes>
             </Layout>
         );
