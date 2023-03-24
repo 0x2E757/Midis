@@ -1,27 +1,23 @@
-import React, { Component } from "react";
+import React from "react";
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
 
-export class NavMenu extends Component {
+export class NavMenu extends React.PureComponent {
+
     static displayName = NavMenu.name;
 
-    constructor(props) {
-        super(props);
+    state = {
+        collapsed: true,
+    };
 
-        this.toggleNavbar = this.toggleNavbar.bind(this);
-        this.state = {
-            collapsed: true
-        };
-    }
-
-    toggleNavbar() {
+    toggleNavbar = () => {
         this.setState({
-            collapsed: !this.state.collapsed
+            collapsed: !this.state.collapsed,
         });
     }
 
-    render() {
+    render = () => {
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>

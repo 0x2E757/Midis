@@ -1,14 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { Counter } from "./components/Counter";
-import { Home } from "./components/Home";
+import { Counter } from "./components/Views/Counter";
+import { Home } from "./components/Views/Home";
 import "./custom.css";
 
-export default class App extends Component {
+export default class App extends React.PureComponent {
+
     static displayName = App.name;
 
-    render() {
+    render = () => {
         return (
             <Layout>
                 <Routes>
@@ -18,4 +19,5 @@ export default class App extends Component {
             </Layout>
         );
     }
+
 }

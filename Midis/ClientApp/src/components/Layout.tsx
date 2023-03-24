@@ -1,8 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
 import { Container } from "reactstrap";
 import { NavMenu } from "./NavMenu";
 
-export class Layout extends Component {
+interface IProps {
+    children: JSX.Element;
+}
+
+export class Layout extends React.PureComponent<IProps> {
+
     static displayName = Layout.name;
 
     render() {
@@ -15,4 +20,5 @@ export class Layout extends Component {
             </div>
         );
     }
+
 }

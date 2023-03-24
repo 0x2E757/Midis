@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 
-export class Home extends Component {
+export class Home extends React.PureComponent {
+
     static displayName = Home.name;
 
     render() {
@@ -23,4 +24,5 @@ export class Home extends Component {
             </div>
         );
     }
+
 }
