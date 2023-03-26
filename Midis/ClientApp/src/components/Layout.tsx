@@ -1,21 +1,17 @@
 import React from "react";
 import { NavMenu } from "./NavMenu";
 
-interface IProps {
-    children: JSX.Element;
-}
+type Props = {
+    children: JSX.Element,
+};
 
-export class Layout extends React.PureComponent<IProps> {
+export function Layout(props: Props) {
 
-    static displayName = Layout.name;
-
-    render() {
-        return (
-            <div>
-                <NavMenu />
-                {this.props.children}
-            </div>
-        );
-    }
+    return (
+        <div>
+            <NavMenu />
+            {props.children}
+        </div>
+    );
 
 }

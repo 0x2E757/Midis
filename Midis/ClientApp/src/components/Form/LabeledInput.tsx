@@ -1,30 +1,26 @@
 import React from "react";
 import { Field } from "pateo";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, FormFeedback } from "reactstrap";
 
-interface IProps extends React.ComponentProps<typeof Input> {
-    name: string;
-    field: Field;
-}
+type Props = React.ComponentProps<typeof Input> & {
+    name: string,
+    field: Field,
+};
 
-export class LabeledInput extends React.PureComponent<IProps> {
+export function LabeledInput({ field, placeholder, ...props }: Props) {
 
-    onInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.field.change(event.target.value);
-    }
+    const id = field.form.name + ":" + field.name;
+    const label = placeholder ?? field.name;
+    const showError = (field.touched || field.submitFailed) && field.errors.length > 0;
 
-    render = () => {
-        const { field, name, placeholder, ...props } = this.props;
-        const id = field.form.name + "_" + field.name;
-        const label = placeholder ?? name;
-        return (
-            <FormGroup floating>
-                <Input {...props} id={id} name={name} placeholder={label} onChange={this.onInputChange} />
-                <Label for={id}>
-                    {label}
-                </Label>
-            </FormGroup>
-        );
-    }
+    return (
+        <FormGroup floating>
+            <Input id={id} placeholder={label} invalid={showError} {...props} {...field.inputProps} />
+            <Label for={id}>{label}</Label>
+            {showError && field.errors.map((error, index) => (
+                <FormFeedback key={index}>{error}</FormFeedback>
+            ))}
+        </FormGroup>
+    );
 
 }
