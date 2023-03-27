@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +28,12 @@ namespace Midis
         {
             builder.Services.AddCors();
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContext<MidisContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("MidisContext")
+            ));
+
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             var appSettingsSection = builder.Configuration.GetSection("AppSettings");
             builder.Services.Configure<AppSettings>(appSettingsSection);
@@ -62,6 +69,16 @@ namespace Midis
             else
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<MidisContext>();
+                context.Database.EnsureCreated();
+                DbInitializer.Initialize(context);
             }
 
             app.UseCors(corsPolicyBuilder => corsPolicyBuilder

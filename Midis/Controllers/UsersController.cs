@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Midis.Entities;
 using Midis.Helpers;
-using System.Collections.Generic;
-using System.Linq;
+using Midis.Models;
+using System.Threading.Tasks;
 
 namespace Midis.Controllers
 {
@@ -14,74 +15,58 @@ namespace Midis.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppSettings _appSettings;
+        private readonly MidisContext _midisContext;
 
-        private static List<User> _users = new List<User>
-        {
-            new User { Id = 1, Username = "admin", Password = "admin", Roles = new() { Role.User, Role.Admin } },
-            new User { Id = 2, Username = "user", Password = "user", Roles = new() { Role.User } },
-        };
-
-        public UsersController(IOptions<AppSettings> appSettings)
+        public UsersController(IOptions<AppSettings> appSettings, MidisContext midisContext)
         {
             _appSettings = appSettings.Value;
+            _midisContext = midisContext;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterData registerData)
+        public async Task<IActionResult> Register([FromBody] RegisterData registerData)
         {
-            var user = _users.SingleOrDefault(user => user.Username == registerData.Username);
+            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == registerData.Username);
 
-            if (user != null)
+            if (userModel != null)
                 return BadRequest(new { Errors = new { Username = "Username is taken." } });
 
             if (registerData.Password_Confirm != registerData.Password)
                 return BadRequest(new { Errors = new { Password_Confirm = "Passwords do not match." } });
 
-            user = new User { Id = _users.Count + 1, Username = registerData.Username, Password = registerData.Password, Roles = new() { Role.User } };
-            _users.Add(user);
+            userModel = new UserModel
+            {
+                Username = registerData.Username,
+                PasswordHash = Utils.GetSHA256(registerData.Password + registerData.Username),
+                Roles = new string[] { Role.User },
+            };
 
-            user.Token = JwtHelpers.GetBearerToken(user, _appSettings.Secret);
+            _midisContext.Users.Add(userModel);
+            await _midisContext.SaveChangesAsync();
 
-            return Ok(user);
+            var userData = userModel.ToUserData();
+            userData.Token = JwtHelpers.GetBearerToken(userData, _appSettings.Secret);
+
+            return Ok(userData);
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateData authenticateData)
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateData authenticateData)
         {
-            var user = _users.SingleOrDefault(user => user.Username == authenticateData.Username);
+            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == authenticateData.Username);
 
-            if (user == null)
+            if (userModel == null)
                 return BadRequest(new { Errors = new { Username = "User not found." } });
 
-            if (user.Password != authenticateData.Password)
+            if (userModel.PasswordHash != Utils.GetSHA256(authenticateData.Password + authenticateData.Username))
                 return BadRequest(new { Errors = new { Password = "Password is incorrect." } });
 
-            user.Token = JwtHelpers.GetBearerToken(user, _appSettings.Secret);
+            var userData = userModel.ToUserData();
+            userData.Token = JwtHelpers.GetBearerToken(userData, _appSettings.Secret);
 
-            return Ok(user);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult Get()
-        {
-            return Ok("Mur:" + _appSettings.Secret);
-        }
-
-        [Authorize(Roles = Role.Admin)]
-        [HttpGet("admin_only")]
-        public ActionResult AdminOnly()
-        {
-            return Ok("Admins only here");
-        }
-
-        [Authorize(Roles = Role.User)]
-        [HttpGet("user_only")]
-        public ActionResult UserOnly()
-        {
-            return Ok("Users only here");
+            return Ok(userData);
         }
     }
 }

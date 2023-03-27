@@ -11,7 +11,7 @@ namespace Midis.Helpers
 {
     public static class JwtHelpers
     {
-        public static string GetBearerToken(User user, string secret)
+        public static string GetBearerToken(UserData user, string secret)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secret);
