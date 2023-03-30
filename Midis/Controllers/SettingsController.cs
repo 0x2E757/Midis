@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Midis.Constants;
 using Midis.Entities;
+using Midis.Helpers;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Midis.Controllers
 {
@@ -9,28 +14,63 @@ namespace Midis.Controllers
     [Route("api/[controller]")]
     public class SettingsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
+        private readonly MidisContext _midisContext;
+
+        public SettingsController(MidisContext midisContext)
         {
+            _midisContext = midisContext;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var settings = await _midisContext.Settings.ToListAsync();
+
             var settingsData = new SettingsData
             {
-                MaximumFileSize = "1024",
-                MinimumImageHeight = "200",
-                MinimumImageWidth = "200",
-                MaximumImageHeight = "500",
-                MaximumImageWidth = "500",
-                AllowedExtensions = new() { "jpg", "jpeg", "png", "bmp" },
+                MaximumFileSize = settings.Where(setting => setting.Name == Setting.MaximumFileSize).First()!.IntegerValue!.ToString(),
+                MinimumImageHeight = settings.Where(setting => setting.Name == Setting.MinimumImageHeight).First()!.IntegerValue!.ToString(),
+                MinimumImageWidth = settings.Where(setting => setting.Name == Setting.MinimumImageWidth).First()!.IntegerValue!.ToString(),
+                MaximumImageHeight = settings.Where(setting => setting.Name == Setting.MaximumImageHeight).First()!.IntegerValue!.ToString(),
+                MaximumImageWidth = settings.Where(setting => setting.Name == Setting.MaximumImageWidth).First()!.IntegerValue!.ToString(),
+                AllowedExtensions = settings.Where(setting => setting.Name == Setting.AllowedExtensions).First()!.StringValue!.Split(",").ToList(),
             };
+
             return Ok(settingsData);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] SettingsData settingsData)
+        public async Task<IActionResult> Post([FromBody] SettingsData settingsData)
         {
-            if (settingsData.AllowedExtensions != null)
-                settingsData.AllowedExtensions.RemoveAll(string.IsNullOrWhiteSpace);
-            else
-                settingsData.AllowedExtensions = new();
+            settingsData!.AllowedExtensions!.RemoveAll(string.IsNullOrWhiteSpace);
+
+            var settings = await _midisContext.Settings.ToListAsync();
+
+            var maximumFileSize = settings.Where(setting => setting.Name == Setting.MaximumFileSize).First()!;
+            maximumFileSize.IntegerValue = int.Parse(settingsData!.MaximumFileSize!);
+            _midisContext.Settings.Update(maximumFileSize);
+
+            var minimumImageHeight = settings.Where(setting => setting.Name == Setting.MinimumImageHeight).First()!;
+            minimumImageHeight.IntegerValue = int.Parse(settingsData!.MinimumImageHeight!);
+            _midisContext.Settings.Update(minimumImageHeight);
+
+            var minimumImageWidth = settings.Where(setting => setting.Name == Setting.MinimumImageWidth).First()!;
+            minimumImageWidth.IntegerValue = int.Parse(settingsData!.MinimumImageWidth!);
+            _midisContext.Settings.Update(minimumImageWidth);
+
+            var maximumImageHeight = settings.Where(setting => setting.Name == Setting.MaximumImageHeight).First()!;
+            maximumImageHeight.IntegerValue = int.Parse(settingsData!.MaximumImageHeight!);
+            _midisContext.Settings.Update(maximumImageHeight);
+
+            var maximumImageWidth = settings.Where(setting => setting.Name == Setting.MaximumImageWidth).First()!;
+            maximumImageWidth.IntegerValue = int.Parse(settingsData!.MaximumImageWidth!);
+            _midisContext.Settings.Update(maximumImageWidth);
+
+            var allowedExtensions = settings.Where(setting => setting.Name == Setting.AllowedExtensions).First()!;
+            allowedExtensions.StringValue = string.Join(",", settingsData!.AllowedExtensions!);
+            _midisContext.Settings.Update(allowedExtensions);
+
+            await _midisContext.SaveChangesAsync();
 
             return Ok(settingsData);
         }

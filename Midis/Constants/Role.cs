@@ -1,4 +1,4 @@
-﻿namespace Midis.Entities
+﻿namespace Midis.Constants
 {
     public static class Role
     {

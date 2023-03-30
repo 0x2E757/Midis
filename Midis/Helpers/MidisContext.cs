@@ -12,10 +12,12 @@ namespace Midis.Helpers
         }
 
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<SettingModel> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>().ToTable("Users");
+            modelBuilder.Entity<SettingModel>().ToTable("Settings");
 
             modelBuilder.Entity<UserModel>()
                 .Property(entity => entity.Roles)
