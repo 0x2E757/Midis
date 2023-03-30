@@ -1,6 +1,4 @@
-﻿using Midis.Entities;
-
-namespace Midis.Models
+﻿namespace Midis.Models
 {
     public class UserModel
     {

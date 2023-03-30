@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Midis.Entities
+namespace Midis.DTOs
 {
     public class SettingsDTO
     {

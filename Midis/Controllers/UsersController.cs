@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Midis.Constants;
-using Midis.Entities;
+using Midis.DTOs;
 using Midis.Helpers;
 using Midis.Models;
 using System.Threading.Tasks;
@@ -67,7 +67,7 @@ namespace Midis.Controllers
             if (userModel.PasswordHash != Utils.GetSHA256(authenticateDto.Password + authenticateDto.Username))
                 return BadRequest(new { Errors = new { Password = "Password is incorrect." } });
 
-            var userDto =  _mapper.Map<UserDTO>(userModel);
+            var userDto = _mapper.Map<UserDTO>(userModel);
             userDto.Token = JwtHelpers.GetBearerToken(userDto, _appSettings.Secret);
 
             return Ok(userDto);

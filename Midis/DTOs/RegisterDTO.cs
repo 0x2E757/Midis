@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Midis.Entities
+namespace Midis.DTOs
 {
     public class RegisterDTO
     {

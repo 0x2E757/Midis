@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Midis.Entities;
+using Midis.DTOs;
 using Midis.Models;
 
 namespace Midis.Helpers

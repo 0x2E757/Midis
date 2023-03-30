@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Midis.Constants;
-using Midis.Entities;
+using Midis.DTOs;
 using Midis.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
