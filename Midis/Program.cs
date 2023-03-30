@@ -39,7 +39,7 @@ namespace Midis
             builder.Services.Configure<AppSettings>(appSettingsSection);
 
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(appSettings!.Secret);
 
             builder.Services.AddAuthentication(authenticationOptions =>
             {

@@ -7,7 +7,7 @@ type Props = React.ComponentProps<typeof Input> & {
     field: Field,
 };
 
-export function LabeledInput({ field, placeholder, ...props }: Props) {
+export default function LabeledInput({ field, placeholder, ...props }: Props) {
 
     const id = field.form.name + ":" + field.name;
     const label = placeholder ?? field.name;

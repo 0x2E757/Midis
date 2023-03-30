@@ -2,10 +2,16 @@ import { post } from "./fetch";
 
 const baseUrl = "api/users/";
 
-export const register = (data) => {
-    return post(baseUrl + "register/", data);
-}
+const api = {
 
-export const login = (data) => {
-    return post(baseUrl + "authenticate/", data);
-}
+    register: (data) => {
+        return post(baseUrl + "register/", data);
+    },
+
+    login: (data) => {
+        return post(baseUrl + "authenticate/", data);
+    },
+
+};
+
+export default api;

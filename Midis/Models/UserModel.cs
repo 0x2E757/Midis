@@ -6,9 +6,9 @@ namespace Midis.Models
     public class UserModel
     {
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-        public string[] Roles { get; set; }
+        public required string Username { get; set; }
+        public required string PasswordHash { get; set; }
+        public required string[] Roles { get; set; }
 
         public UserData ToUserData()
         {

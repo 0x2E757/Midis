@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSubscribable } from "pateo";
+import { useWrapper } from "pateo";
 import { Toast } from "bootstrap";
 import w from "../wrappers";
 
 export function Toasts() {
 
     const [lastId, setLastId] = useState(0);
-    const toastList = useSubscribable(w.toast.list);
+    const [toastList] = useWrapper(w.toast.list);
 
     useEffect(() => {
         for (const toast of toastList)
@@ -17,6 +17,7 @@ export function Toasts() {
                     toast.show();
                 }
                 setLastId(toast.id);
+                break;
             }
     }, [toastList, lastId]);
 

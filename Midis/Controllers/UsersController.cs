@@ -32,12 +32,12 @@ namespace Midis.Controllers
             if (userModel != null)
                 return BadRequest(new { Errors = new { Username = "Username is taken." } });
 
-            if (registerData.Password_Confirm != registerData.Password)
+            if (registerData.PasswordConfirm != registerData.Password)
                 return BadRequest(new { Errors = new { Password_Confirm = "Passwords do not match." } });
 
             userModel = new UserModel
             {
-                Username = registerData.Username,
+                Username = registerData.Username!,
                 PasswordHash = Utils.GetSHA256(registerData.Password + registerData.Username),
                 Roles = new string[] { Role.User },
             };

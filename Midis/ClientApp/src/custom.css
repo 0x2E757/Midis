@@ -3,7 +3,11 @@ a {
     color: #0366d6;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -11,8 +15,62 @@ code {
     color: #E01A76;
 }
 
+.btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: #fff !important;
+    background-color: #1b6ec2 !important;
+    border-color: #1861ac !important;
+}
+
+.btn-primary:hover {
+    color: #fff !important;
+    background-color: #175fa6 !important;
+    border-color: #155494 !important;
+}
+
+.btn-success {
+    color: #fff !important;
+    background-color: #179c20 !important;
+    border-color: #13881b !important;
+}
+
+.btn-success:hover {
+    color: #fff !important;
+    background-color: #15891d !important;
+    border-color: #117217 !important;
+}
+
+.btn-lightgray,
+.btn-lightgray:active,
+.btn-lightgray:focus {
+    background: #eee;
+    border-color: #ddd;
+    color: #555;
+}
+
+.btn-lightgray:hover {
+    background: #e0e0e0;
+    border-color: #d0d0d0;
+    color: #333;
+}
+
+.btn-lightgray.disabled {
+    background: #eee;
+    border-color: #ddd;
+    color: #555;
+    opacity: 0.65;
+}
+
+.btn+.btn {
+    margin-left: 0.5rem;
+}
+
+.input-cross-button {
+    cursor: pointer;
+    border-radius: 10px;
+    color: rgb(188, 21, 21);
 }

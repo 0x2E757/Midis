@@ -1,4 +1,4 @@
-import Pateo from "pateo";
+import { StaticWrapper } from "pateo";
 
 type BootstrapColor = "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "light" | "dark";
 
@@ -8,7 +8,7 @@ type ToastData = {
     bg?: BootstrapColor,
 };
 
-export const list = new Pateo.StaticWrapper<ToastData[]>([]);
+export const list = new StaticWrapper<ToastData[]>([]);
 
 let lastId = 0;
 

@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "pateo";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "reactstrap";
-import { LabeledInput } from "../Form/LabeledInput";
+import { LabeledInput } from "../Form";
 import w from "../../wrappers";
 import api from "../../api";
 
 export function Login() {
 
     const [loading, setLoading] = useState(false);
-    const formFetchHandle = useRef(null);
     const form = useForm("login");
+    const formFetchHandle = useRef(null);
     const navigate = useNavigate();
 
     form.onSubmit = (values) => {
@@ -55,6 +55,7 @@ export function Login() {
                             onKeyDown={onInputKeyDown}
                             name="username"
                             placeholder="Username"
+                            disabled={loading}
                         />
                         <form.Field
                             component={LabeledInput}
@@ -62,6 +63,7 @@ export function Login() {
                             name="password"
                             type="password"
                             placeholder="Password"
+                            disabled={loading}
                         />
                         <Button className="btn-success" onClick={() => form.submit()} disabled={loading}>
                             {loading && (
