@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ namespace Midis
             ));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services.AddAutoMapper(typeof(Program));
 
             var appSettingsSection = builder.Configuration.GetSection("AppSettings");
             builder.Services.Configure<AppSettings>(appSettingsSection);

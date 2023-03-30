@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Midis.Entities
 {
-    public class SettingsData
+    public class SettingsDTO
     {
         [Required(ErrorMessage = "Field is required")]
         [RegularExpression("([0-9]+)", ErrorMessage = "Value must be positive integer")]

@@ -2,7 +2,7 @@
 
 namespace Midis.Entities
 {
-    public class RegisterData
+    public class RegisterDTO
     {
         [Required(ErrorMessage = "Field is required")]
         public string? Username { get; set; }

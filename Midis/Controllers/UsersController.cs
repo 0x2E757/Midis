@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -17,57 +18,59 @@ namespace Midis.Controllers
     {
         private readonly AppSettings _appSettings;
         private readonly MidisContext _midisContext;
+        private readonly IMapper _mapper;
 
-        public UsersController(IOptions<AppSettings> appSettings, MidisContext midisContext)
+        public UsersController(IOptions<AppSettings> appSettings, MidisContext midisContext, IMapper mapper)
         {
             _appSettings = appSettings.Value;
             _midisContext = midisContext;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterData registerData)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
         {
-            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == registerData.Username);
+            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == registerDto.Username);
 
             if (userModel != null)
                 return BadRequest(new { Errors = new { Username = "Username is taken." } });
 
-            if (registerData.PasswordConfirm != registerData.Password)
+            if (registerDto.PasswordConfirm != registerDto.Password)
                 return BadRequest(new { Errors = new { Password_Confirm = "Passwords do not match." } });
 
             userModel = new UserModel
             {
-                Username = registerData.Username!,
-                PasswordHash = Utils.GetSHA256(registerData.Password + registerData.Username),
+                Username = registerDto.Username!,
+                PasswordHash = Utils.GetSHA256(registerDto.Password + registerDto.Username),
                 Roles = new string[] { Role.User },
             };
 
             _midisContext.Users.Add(userModel);
             await _midisContext.SaveChangesAsync();
 
-            var userData = userModel.ToUserData();
-            userData.Token = JwtHelpers.GetBearerToken(userData, _appSettings.Secret);
+            var userDto = _mapper.Map<UserDTO>(userModel);
+            userDto.Token = JwtHelpers.GetBearerToken(userDto, _appSettings.Secret);
 
-            return Ok(userData);
+            return Ok(userDto);
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] AuthenticateData authenticateData)
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateDTO authenticateDto)
         {
-            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == authenticateData.Username);
+            var userModel = await _midisContext.Users.SingleOrDefaultAsync(user => user.Username == authenticateDto.Username);
 
             if (userModel == null)
                 return BadRequest(new { Errors = new { Username = "User not found." } });
 
-            if (userModel.PasswordHash != Utils.GetSHA256(authenticateData.Password + authenticateData.Username))
+            if (userModel.PasswordHash != Utils.GetSHA256(authenticateDto.Password + authenticateDto.Username))
                 return BadRequest(new { Errors = new { Password = "Password is incorrect." } });
 
-            var userData = userModel.ToUserData();
-            userData.Token = JwtHelpers.GetBearerToken(userData, _appSettings.Secret);
+            var userDto =  _mapper.Map<UserDTO>(userModel);
+            userDto.Token = JwtHelpers.GetBearerToken(userDto, _appSettings.Secret);
 
-            return Ok(userData);
+            return Ok(userDto);
         }
     }
 }
